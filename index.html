@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <title>HPI - Visual Diagnostics Tool</title>
+   <link type="text/css" rel="stylesheet" href="style.css"></link>
+   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" rel="stylesheet"></link>
+   <!-- jQuery CDN -->
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+   <!--  Alasql CDN -->
+   <script src="http://alasql.org/console/alasql.min.js"></script>
+   <script src="http://alasql.org/console/xlsx.core.min.js"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"></script>
+</head>
+<body>
+   <div class="header">
+      <h1>Speaker Turn Marker</h1><img src="img/hpi_dschool_logo_web.png" id="logo"/>
+   </div>
+   <div class="contact text-center">
+        <a href="#openModal">About</a>
+   </div>
+   <div id="openModal" class="modalDialog">
+       <div>
+           <a href="#close" title="Close" class="close">X</a>
+           <h2>Speaker Turn - How to use</h2>
+           <p><span style="font-weight:bold">1</span> - First load the video using the Choose File button (below the video frame) and clicking the button Load Video.</p> 
+           <p><span style="font-weight:bold">2</span> - The keyboard keys from 1 to 6 represent, each Team Member from A to F respectively. When you press the key, the timer starts and when you release the key, the timer finishes. Then the timestamps will appear on a table on the right side.</p>
+           <p><span style="font-weight:bold">3</span> - If any mistake is made, you can stop the video, delete the timestamp on the right and rewind it using the Rewind 10s button.</p>
+           <p><span style="font-weight:bold">4</span> - If you want to slow down the video speed, click on the Slow Video button, it will make the video speed to 0.75. Clicking once again will make the video to normal speed.</p>
+           <p><span style="font-weight:bold">5</span> - After you have finished, write the excel file name in the box above the Export .XLS button and click the Export .XLS button to export the file with the timestamps</p>
+           <p><span style="font-weight:bold">6</span> - Before loading a new video click on Clean Data</p>
+           <p><span style="font-weight:bold">7</span> - Choose the next video. Have fun!!</p>
+       </div>
+   </div>
+   <div>
+      <h1 class="buttonsTitle">Team Members</h1>
+      <div id="buttons">
+         <!-- Team members buttons -->
+         <div class = "flex-container teamMembers">
+            <div>
+               <button type="button" class = "button" id="member_A">A</button>
+            </div>
+            <div>
+               <button type="button" class = "button" id="member_B">B</button>
+            </div>
+            <div >
+               <button type="button" class = "button" id="member_C">C</button>
+            </div>
+            <br><br><br>
+            <div>
+               <button type="button" class = "button" id="member_D">D</button>
+            </div>
+            <div>
+               <button type="button" class = "button" id="member_E">E</button>
+            </div>
+            <div>
+               <button type="button" class = "button" id="member_F" alt=>F</button>
+            </div>
+         </div>
+         <div>
+         <br><br>
+         </div>
+         <br><br><br><br><br>
+         <input type="text" placeholder="File Name" id="team_name_input" width = "400px"></input>
+         <div class="export values">
+            <button type="button" class = "buttonText" id="Export">Export .XLS</button>
+         </div>
+         <div class="clean data">
+            <button type="button" class = "buttonText" id="clean">Clean Data</button>
+         </div>
+      </div>
+      <!-- Video tag and source -->
+         <video width="640" heigh="360" id="video1" controls>
+           <source id='mp4Source' src="videos/ChocolateScene.mp4" type="video/mp4">
+         </video>
+      <table>
+         <tr>
+            <th>Member</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+         </tr>
+      </table> 
+   </div>
+   <input type="file" id="videoSource">
+   <div id="message"></div>
+   <button class = "buttonText" id="rewind">Rewind 10s</button>
+   <button class = "buttonText" id="slowDownVid">Slow Video</button>
+   <button class = "buttonText" id="loadVideo">Load Video</button>
+   <br><br><br><br><br><br><br><br><br>
+   <div id="footer">
+      <p>Created by Guilherme Samora, Axel Meining and Bastien Grasnick</p>
+      <p>Check the source code here: <a href="https://github.com/DTRPVisualDiagnostics/speakermarker">GitHub</a>.</p>
+   </div>
+   <div class = "footer"></div>
+   <!-- JavaScript tag -->
+   <script src="javascript.js"></script>
+</body>
+</html>
