@@ -273,14 +273,14 @@ var inputNode = document.querySelector('#videoSource');
 
 
 function slowDownVideo(){
-  if (!video.playbackRate - 0.1 < 0.5) {
+  if (!(video.playbackRate - 0.1 < 0.5)) {
     video.playbackRate -= 0.1;
     $("#videoSpeed").html(""+video.playbackRate);
   }
 }
 
 function speedUpVideo(){  
-  if (!video.playbackRate + 0.1 > 2.0) {
+  if (!(video.playbackRate + 0.1 >= 2.1)) {
     video.playbackRate += 0.1;
     $("#videoSpeed").html(""+video.playbackRate);
   }
