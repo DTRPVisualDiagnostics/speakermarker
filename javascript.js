@@ -7,6 +7,7 @@ $(document).ready(function(){
   var memberAEnd = 0, memberBEnd = 0, memberCEnd = 0, memberDEnd = 0, memberEEnd = 0, memberFEnd = 0, silenceEnd = 0;
   var down = {};
   var filterArray = [];
+  var deleted = [];
 
 
 // Keyboard shortcuts from 1 to 5 to represent the team members 
@@ -47,6 +48,15 @@ $(document).ready(function(){
           memberFStart = video.currentTime;
           down['54'] = true;
         };
+    } else if (e.which === 88) {
+      var deletedTurn = results.pop();
+      deleted.push(deletedTurn);
+      newTime = deletedTurn[1] - 3;
+      if (newTime < 0.0) {
+        newTime = 0.0;
+      }
+      video.currentTime = newTime;
+      renderResults();
     }
   });
 
@@ -167,6 +177,13 @@ $(document).ready(function(){
           var lastResult = results.length - 1;
           $("table").append("<tr id =" + lastResult + "><td>" + results[lastResult][0] + "</td><td>" + results[lastResult][1] + "</td><td>" + results[lastResult][2] + "</td><td class=\"delete\"><button class=\"removebutton\"><img src=\"img\"delete.png\" height=10px width=10px ></td></tr>");
           // $("table").append("<tr id =\"row"+lastResult + "\"><td>" + results[lastResult][0] + "</td><td>" + results[lastResult][1] + "</td><td>" + results[lastResult][2] + "</td><td class=\"delete\"><button class=\"removebutton\"><img src=\"delete.png\" height=10px width=10px ></td></tr>");
+  }
+
+  function renderResults(){
+    $('tr').not(':first').remove();
+    for (var i = 0; i < results.length; i++) {
+      $("table").append("<tr id =" + i + "><td>" + results[i][0] + "</td><td>" + results[i][1] + "</td><td>" + results[i][2] + "</td><td class=\"delete\"><button class=\"removebutton\"><img src=\"img\"delete.png\" height=10px width=10px ></td></tr>");
+    }
   }
 
 });
