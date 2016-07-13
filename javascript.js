@@ -48,7 +48,9 @@ $(document).ready(function(){
           memberFStart = video.currentTime;
           down['54'] = true;
         };
-    } else if (e.which === 88) {
+    } 
+    // delete last turn, jump 3 seconds before it and slow down the video speed by 0.1 when "x" is pressed
+    else if (e.which === 88) {
       var deletedTurn = results.pop();
       deleted.push(deletedTurn);
       newTime = deletedTurn[1] - 3;
@@ -57,6 +59,15 @@ $(document).ready(function(){
       }
       video.currentTime = newTime;
       renderResults();
+      slowDownVideo();
+    } 
+    // "s" as shortcut for slow down video
+    else if (e.which === 83) {
+      slowDownVideo();
+    }
+    // "f" as shortcut for speed up video
+    else if (e.which === 70) {
+      speedUpVideo();
     }
   });
 
@@ -181,7 +192,7 @@ $(document).ready(function(){
 
   function renderResults(){
     $('tr').not(':first').remove();
-    for (var i = 0; i < results.length; i++) {
+    for (var i = 1; i < results.length; i++) {
       $("table").append("<tr id =" + i + "><td>" + results[i][0] + "</td><td>" + results[i][1] + "</td><td>" + results[i][2] + "</td><td class=\"delete\"><button class=\"removebutton\"><img src=\"img\"delete.png\" height=10px width=10px ></td></tr>");
     }
   }
@@ -226,20 +237,10 @@ $(":file").change(function(){
 });
 
 //slow down video button
-$("#slowDownVid").click(function(){
-  if (video.playbackRate > 0.5) {
-    video.playbackRate -= 0.1;
-    $("#videoSpeed").html(""+video.playbackRate);
-  }
-});
+$("#slowDownVid").click(slowDownVideo());
 
 //speed up video button
-$("#speedUpVid").click(function(){  
-  if (video.playbackRate < 2.0) {
-    video.playbackRate += 0.1;
-    $("#videoSpeed").html(""+video.playbackRate);
-  }
-});
+$("#speedUpVid").click(speedUpVideo());
     
 //rewind video button
 $("#rewind").click(function(){
@@ -248,6 +249,22 @@ $("#rewind").click(function(){
 
 var node = document.querySelector('#message');
 var inputNode = document.querySelector('#videoSource');
+
+
+
+function slowDownVideo(){
+  if (video.playbackRate > 0.5) {
+    video.playbackRate -= 0.1;
+    $("#videoSpeed").html(""+video.playbackRate);
+  }
+}
+
+function speedUpVideo(){  
+  if (video.playbackRate < 2.0) {
+    video.playbackRate += 0.1;
+    $("#videoSpeed").html(""+video.playbackRate);
+  }
+}
 
 (function localFileVideoPlayerInit(win) {
     var URL = win.URL || win.webkitURL;
