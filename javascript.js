@@ -210,10 +210,17 @@ $(":file").change(function(){
 
 //slow down video button
 $("#slowDownVid").click(function(){
-  if(video.playbackRate = 1){
-    video.playbackRate = 0.75;
-  } else {
-    video.playbackRate = 1
+  if (video.playbackRate > 0.5) {
+    video.playbackRate -= 0.1;
+    $("#videoSpeed").html(""+video.playbackRate);
+  }
+});
+
+//speed up video button
+$("#speedUpVid").click(function(){  
+  if (video.playbackRate < 2.0) {
+    video.playbackRate += 0.1;
+    $("#videoSpeed").html(""+video.playbackRate);
   }
 });
     
