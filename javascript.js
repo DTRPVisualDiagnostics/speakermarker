@@ -136,6 +136,12 @@ $(document).ready(function(){
 // don't trigger the space default functions
   $(document).keydown(function(e) {
     if (e.which == 32) {
+        e.stopPropagation();
+        if (video.paused) {
+          video.play();
+        } else {
+          video.pause();
+        }
         return false;
     }
   });
