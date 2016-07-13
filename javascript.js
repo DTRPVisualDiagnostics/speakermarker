@@ -9,6 +9,16 @@ $(document).ready(function(){
   var filterArray = [];
   var deleted = [];
 
+  var stopVideo = false;
+  var endtimeoffset = 0.0;
+
+  video.addEventListener("timeupdate", function() {
+    if (stopVideo && video.currentTime >= endtimeoffset) {
+      video.pause();
+      stopVideo = false;
+    }
+  }, false);
+
 
 // Keyboard shortcuts from 1 to 5 to represent the team members 
   $(document).keydown(function (e) {  
@@ -161,6 +171,12 @@ $(document).ready(function(){
     return false;
   });
 
+  $('table').on("click", "td.startTimeEntry", function() {
+    video.currentTime = this.innerHTML;
+    endtimeoffset = $(this).parent().find(".endTimeEntry")[0].innerHTML;
+    stopVideo = true;
+  });
+
 
 
 // function that exports array results to excel .xlsx
@@ -186,15 +202,19 @@ $(document).ready(function(){
 // displays time stamps in the HTML page
   function resultsOnScreen(){
           var lastResult = results.length - 1;
-          $("table").append("<tr id =" + lastResult + "><td>" + results[lastResult][0] + "</td><td>" + results[lastResult][1] + "</td><td>" + results[lastResult][2] + "</td><td class=\"delete\"><button class=\"removebutton\"><img src=\"img\"delete.png\" height=10px width=10px ></td></tr>");
+          appendTurn(lastResult);
           // $("table").append("<tr id =\"row"+lastResult + "\"><td>" + results[lastResult][0] + "</td><td>" + results[lastResult][1] + "</td><td>" + results[lastResult][2] + "</td><td class=\"delete\"><button class=\"removebutton\"><img src=\"delete.png\" height=10px width=10px ></td></tr>");
   }
 
   function renderResults(){
     $('tr').not(':first').remove();
     for (var i = 1; i < results.length; i++) {
-      $("table").append("<tr id =" + i + "><td>" + results[i][0] + "</td><td>" + results[i][1] + "</td><td>" + results[i][2] + "</td><td class=\"delete\"><button class=\"removebutton\"><img src=\"img\"delete.png\" height=10px width=10px ></td></tr>");
+      appendTurn(i);
     }
+  }
+
+  function appendTurn(index) {
+    $("table").append("<tr id =" + index + "><td>" + results[index][0] + "</td><td class='startTimeEntry'>" + results[index][1] + "</td><td class='endTimeEntry'>" + results[index][2] + "</td><td class=\"delete\"><button class=\"removebutton\"><img src=\"img\"delete.png\" height=10px width=10px ></td></tr>");
   }
 
 });
