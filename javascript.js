@@ -34,16 +34,6 @@ $(document).ready(function(){
     window.alert("Local storage cannot be used. Please remember to download your results!");
   }
 
-  function deleteRow(endTime) {
-    results = results.filter(function(d) {
-      return parseFloat(d[2]) !== endTime;
-    });
-    if (useStorage) {
-      localStorage.setItem("dtrpvd.speakermarker.results", JSON.stringify(results));
-    }
-    renderResults()
-  }
-
   function mergeTurn(endTime) {
     results.forEach(function(d,i) {
       if (d[2] === parseFloat(endTime)) {
@@ -54,9 +44,6 @@ $(document).ready(function(){
             results.splice(i,1);
             renderResults();
             found = true;
-            if (useStorage) {
-              localStorage.setItem("dtrpvd.speakermarker.results", JSON.stringify(results));
-            }
             break;
           }
         }
@@ -127,9 +114,6 @@ $(document).ready(function(){
       }
       video.currentTime = newTime;
       renderResults();
-      if (useStorage) {
-        localStorage.setItem("dtrpvd.speakermarker.results", JSON.stringify(results));
-      }
     } 
     // "s" as shortcut for slow down video
     else if (e.which === 83) {
@@ -246,8 +230,9 @@ $(document).ready(function(){
     //start time in the row
     // var startTimeRow = +$(this).parent().parent()[0]["children"][1]["innerHTML"];
     // end time in the row
-    var endTimeRow = +$(this).parent().parent()[0]["children"][3]["innerHTML"];
-    deleteRow(endTimeRow)
+    var index = parseInt($(this).parent().parent()[0].id);
+    results.splice(index,1);
+    renderResults();
     return false;
   });
 
@@ -283,9 +268,6 @@ $(document).ready(function(){
       }
     });
     renderTimeShiftDisplay();
-    if (useStorage) {
-      localStorage.setItem("dtrpvd.speakermarker.results", JSON.stringify(results));
-    }    
     if (useStorage) {
       localStorage.setItem("dtrpvd.speakermarker.timeShiftStack", JSON.stringify(timeShiftStack));
     }
@@ -337,6 +319,9 @@ $(document).ready(function(){
     $('tr').not(':first').remove();
     for (var i = 1; i < results.length; i++) {
       appendTurn(i);
+    }
+    if (useStorage) {
+      localStorage.setItem("dtrpvd.speakermarker.results", JSON.stringify(results));
     }
   }
 
