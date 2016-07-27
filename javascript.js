@@ -79,6 +79,9 @@ $(document).ready(function(){
     else if (e.which === 70) {
       speedUpVideo();
     }
+    else if (e.which === 80) {
+		rewindVideo();
+    }
   });
 
 // Keyboard shortcuts from 1 to 5 to represent the team members and space to represent silence
@@ -269,9 +272,7 @@ $("#slowDownVid").click(slowDownVideo());
 $("#speedUpVid").click(speedUpVideo());
     
 //rewind video button
-$("#rewind").click(function(){
-  video.currentTime = video.currentTime - 10;
-});
+$("#rewind").click(rewindVideo());
 
 var node = document.querySelector('#message');
 var inputNode = document.querySelector('#videoSource');
@@ -283,6 +284,10 @@ function slowDownVideo(){
     video.playbackRate -= 0.1;
     $("#videoSpeed").html(""+video.playbackRate);
   }
+}
+
+function rewindVideo(){
+	video.currentTime = video.currentTime - 4;
 }
 
 function speedUpVideo(){  
