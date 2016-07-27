@@ -106,7 +106,11 @@ $(document).ready(function(){
       speedUpVideo();
     }
     else if (e.which === 80) {
-		rewindVideo();
+		  rewindVideo();
+    }
+    // merge last turn on pressing "m"
+    else if (e.which === 77) {
+      mergeTurn(results[results.length-1][2])
     }
   });
 
