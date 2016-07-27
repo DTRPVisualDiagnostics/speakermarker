@@ -7,6 +7,7 @@ $(document).ready(function(){
   var memberAEnd = 0, memberBEnd = 0, memberCEnd = 0, memberDEnd = 0, memberEEnd = 0, memberFEnd = 0, silenceEnd = 0;
   var down = {};
   var deleted = [];
+  var timeShiftStack = [];
 
   var stopVideo = false;
   var endtimeoffset = 0.0;
@@ -25,13 +26,17 @@ $(document).ready(function(){
       results = JSON.parse(localStorage.getItem("dtrpvd.speakermarker.results"));
       renderResults();
     }
+    if (localStorage.getItem("dtrpvd.speakermarker.timeShiftStack") !== null) {      
+      timeShiftStack = JSON.parse(localStorage.getItem("dtrpvd.speakermarker.timeShiftStack"));
+      renderTimeShiftDisplay();
+    }
   } else {
     window.alert("Local storage cannot be used. Please remember to download your results!");
   }
 
   function deleteRow(endTime) {
     results = results.filter(function(d) {
-      return d[2] !== endTime;
+      return parseFloat(d[2]) !== endTime;
     });
     if (useStorage) {
       localStorage.setItem("dtrpvd.speakermarker.results", JSON.stringify(results));
@@ -73,43 +78,45 @@ $(document).ready(function(){
 
 // Keyboard shortcuts from 1 to 5 to represent the team members 
   $(document).keydown(function (e) {  
-    if (e.which === 49 && video.currentTime !==0) {
-        $("#member_A").addClass('active');
-        if (down['49'] == null) { // first press
-          memberAStart = video.currentTime;
-          down['49'] = true; // record that the key's down
-        }
-    } else if (e.which === 50 && video.currentTime !==0){
-        $("#member_B").addClass('active');
-        if (down['50'] == null) {
-          memberBStart = video.currentTime;
-          down['50'] = true;
-        };
-    } else if (e.which === 51 && video.currentTime !==0){
-        $("#member_C").addClass('active');
-        if (down['51'] == null) {
-          memberCStart = video.currentTime;
-          down['51'] = true;
-        };
-    } else if (e.which === 52 && video.currentTime !==0){
-        $("#member_D").addClass('active');
-        if (down['52'] == null) {
-          memberDStart = video.currentTime;
-          down['52'] = true;
-        };
-    } else if (e.which === 53 && video.currentTime !==0){
-        $("#member_E").addClass('active');
-        if (down['53'] == null) {
-          memberEStart = video.currentTime;
-          down['53'] = true;
-        };
-    } else if (e.which === 54 && video.currentTime !==0){
-        $("#member_F").addClass('active');
-        if (down['54'] == null) {
-          memberFStart = video.currentTime;
-          down['54'] = true;
-        };
-    } 
+    if ($(":focus")[0] !== $("#timeShiftInput")[0]) {
+      if (e.which === 49 && video.currentTime !==0) {
+          $("#member_A").addClass('active');
+          if (down['49'] == null) { // first press
+            memberAStart = video.currentTime;
+            down['49'] = true; // record that the key's down
+          }
+      } else if (e.which === 50 && video.currentTime !==0){
+          $("#member_B").addClass('active');
+          if (down['50'] == null) {
+            memberBStart = video.currentTime;
+            down['50'] = true;
+          };
+      } else if (e.which === 51 && video.currentTime !==0){
+          $("#member_C").addClass('active');
+          if (down['51'] == null) {
+            memberCStart = video.currentTime;
+            down['51'] = true;
+          };
+      } else if (e.which === 52 && video.currentTime !==0){
+          $("#member_D").addClass('active');
+          if (down['52'] == null) {
+            memberDStart = video.currentTime;
+            down['52'] = true;
+          };
+      } else if (e.which === 53 && video.currentTime !==0){
+          $("#member_E").addClass('active');
+          if (down['53'] == null) {
+            memberEStart = video.currentTime;
+            down['53'] = true;
+          };
+      } else if (e.which === 54 && video.currentTime !==0){
+          $("#member_F").addClass('active');
+          if (down['54'] == null) {
+            memberFStart = video.currentTime;
+            down['54'] = true;
+          };
+      } 
+    }
     // delete last turn, jump 3 seconds before it and slow down the video speed by 0.1 when "x" is pressed
     else if (e.which === 88) {
       var deletedTurn = results.pop();
@@ -239,7 +246,7 @@ $(document).ready(function(){
     //start time in the row
     // var startTimeRow = +$(this).parent().parent()[0]["children"][1]["innerHTML"];
     // end time in the row
-    var endTimeRow = +$(this).parent().parent()[0]["children"][2]["innerHTML"];
+    var endTimeRow = +$(this).parent().parent()[0]["children"][3]["innerHTML"];
     deleteRow(endTimeRow)
     return false;
   });
@@ -254,6 +261,48 @@ $(document).ready(function(){
     endtimeoffset = $(this).parent().find(".endTimeEntry")[0].innerHTML;
     stopVideo = true;
   });
+
+  $("#timeShiftApplyButton").on("click", function() {
+    timeShift = parseFloat($("#timeShiftInput").val());
+    timeShiftStack.push(timeShift);
+    applyTimeShift(timeShift);
+  });
+
+  $("#timeShiftUndoButton").on("click", function() {
+    if (timeShiftStack.length > 0) {
+      timeShift = -1 * timeShiftStack.pop();
+      applyTimeShift(timeShift);
+    }
+  });
+
+  function applyTimeShift(timeShift) {    
+    results.forEach(function(d,i) {
+      if (i > 0) {
+        d[1] = "" + (parseFloat(d[1]) + timeShift).toFixed(6);
+        d[2] = "" + (parseFloat(d[2]) + timeShift).toFixed(6);
+      }
+    });
+    renderTimeShiftDisplay();
+    if (useStorage) {
+      localStorage.setItem("dtrpvd.speakermarker.results", JSON.stringify(results));
+    }    
+    if (useStorage) {
+      localStorage.setItem("dtrpvd.speakermarker.timeShiftStack", JSON.stringify(timeShiftStack));
+    }
+    renderResults();
+  }
+
+  function renderTimeShiftDisplay() {    
+    if (timeShiftStack.length > 1) {
+      $("#timeShiftDisplay").html(timeShiftStack.reduce(function(previousValue, currentValue, currentIndex, array) { return previousValue + currentValue; }).toFixed(5));
+    }
+    else if (timeShiftStack.length === 1) {
+      $("#timeShiftDisplay").html(timeShiftStack[0].toFixed(5));
+    }
+    else {
+      $("#timeShiftDisplay").html(0.0);
+    }
+  }
 
 
 // function that exports array results to excel .xlsx
@@ -271,6 +320,9 @@ $(document).ready(function(){
     console.log(results);
     if (useStorage) {
       localStorage.setItem("dtrpvd.speakermarker.results", JSON.stringify(results));
+      localStorage.removeItem("dtrpvd.speakermarker.timeShiftStack")
+      timeShiftStack = []
+      renderTimeShiftDisplay()
     }
   };
 
@@ -348,7 +400,7 @@ var inputNode = document.querySelector('#videoSource');
 function slowDownVideo(){
   if (!(video.playbackRate - 0.1 < 0.5)) {
     video.playbackRate -= 0.1;
-    $("#videoSpeed").html(""+video.playbackRate);
+    $("#videoSpeed").html(""+video.playbackRate.toFixed(1));
   }
 }
 
@@ -359,7 +411,7 @@ function rewindVideo(){
 function speedUpVideo(){  
   if (!(video.playbackRate + 0.1 >= 2.1)) {
     video.playbackRate += 0.1;
-    $("#videoSpeed").html(""+video.playbackRate);
+    $("#videoSpeed").html(""+video.playbackRate.toFixed(1));
   }
 }
 

@@ -225,6 +225,15 @@ tr {
   text-decoration: none;
 }
 
+#videoSpeed {
+  float: left;
+}
+
+#timeShiftContainer {
+  float: right;
+  margin-right: 40px;
+}
+
 /************
 Modal Box
 ************/

@@ -61,7 +61,7 @@
          <div>
          <br><br>
          </div>
-         <br><br><br><br><br>
+         <br><br><br><br><br> 
          <input type="text" placeholder="File Name" id="team_name_input" width = "400px"></input>
          <div class="export values">
             <button type="button" class = "buttonText" id="Export">Export .XLS</button>
@@ -74,6 +74,14 @@
          <video width="640" heigh="360" id="video1" controls>
            <source id='mp4Source' src="videos/big_buck_bunny.mp4" type="video/mp4">
          </video>
+
+   <div id="timeShiftContainer">
+      <h3> Time Shifting </h3>
+      <button type="button" id="timeShiftUndoButton">Undo</button>
+      <input type="text" name="timeShift" value="0.0" id="timeShiftInput">
+      <button type="button" id="timeShiftApplyButton">Apply</button>
+      <p> Total time shift: </p><span id="timeShiftDisplay">0</span>
+   </div>
       <table>
          <tr>
             <th>Member</th>
