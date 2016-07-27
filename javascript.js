@@ -6,7 +6,6 @@ $(document).ready(function(){
   var memberAStart = 0, memberBStart = 0, memberCStart = 0, memberDStart = 0, memberEStart = 0, memberFStart = 0, silenceStart = 0;
   var memberAEnd = 0, memberBEnd = 0, memberCEnd = 0, memberDEnd = 0, memberEEnd = 0, memberFEnd = 0, silenceEnd = 0;
   var down = {};
-  var filterArray = [];
   var deleted = [];
 
   var stopVideo = false;
@@ -18,6 +17,13 @@ $(document).ready(function(){
       stopVideo = false;
     }
   }, false);
+
+  function deleteRow(endTime) {
+    results = results.filter(function(d) {
+      return d[2] !== endTime;
+    })
+    renderResults()
+  }
 
 
 // Keyboard shortcuts from 1 to 5 to represent the team members 
@@ -173,10 +179,7 @@ $(document).ready(function(){
     // var startTimeRow = +$(this).parent().parent()[0]["children"][1]["innerHTML"];
     // end time in the row
     var endTimeRow = +$(this).parent().parent()[0]["children"][2]["innerHTML"];
-    filterArray.push(endTimeRow);
-    console.log(filterArray);
-    // removes the row on the screen
-    $(this).closest('tr').remove();
+    deleteRow(endTimeRow)
     return false;
   });
 
@@ -187,15 +190,9 @@ $(document).ready(function(){
   });
 
 
-
 // function that exports array results to excel .xlsx
   function exportData() {
       var team = $("#team_name_input").val();
-
-      // filters the results array
-      results = results.filter(function(value){
-        return filterArray.indexOf(value[2]) === -1
-      })
 
       alasql("SELECT * INTO XLSX(\'"+ team + ".xlsx\',{headers:true}) FROM ? ",[results]);
   }
