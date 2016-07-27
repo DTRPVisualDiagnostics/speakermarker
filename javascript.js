@@ -10,6 +10,7 @@ $(document).ready(function(){
 
   var stopVideo = false;
   var endtimeoffset = 0.0;
+  var useStorage = false;
 
   video.addEventListener("timeupdate", function() {
     if (stopVideo && video.currentTime >= endtimeoffset) {
@@ -18,10 +19,23 @@ $(document).ready(function(){
     }
   }, false);
 
+  if (typeof(Storage) !== "undefined") {
+    useStorage = true;
+    if (localStorage.getItem("dtrpvd.speakermarker.results") !== null) {
+      results = JSON.parse(localStorage.getItem("dtrpvd.speakermarker.results"));
+      renderResults();
+    }
+  } else {
+    window.alert("Local storage cannot be used. Please remember to download your results!");
+  }
+
   function deleteRow(endTime) {
     results = results.filter(function(d) {
       return d[2] !== endTime;
-    })
+    });
+    if (useStorage) {
+      localStorage.setItem("dtrpvd.speakermarker.results", JSON.stringify(results));
+    }
     renderResults()
   }
 
@@ -35,6 +49,9 @@ $(document).ready(function(){
             results.splice(i,1);
             renderResults();
             found = true;
+            if (useStorage) {
+              localStorage.setItem("dtrpvd.speakermarker.results", JSON.stringify(results));
+            }
             break;
           }
         }
@@ -43,6 +60,14 @@ $(document).ready(function(){
         }
       }
     });
+  }
+
+
+  function pushAndSave(ary) {
+    results.push(ary)
+    if (useStorage) {
+      localStorage.setItem("dtrpvd.speakermarker.results", JSON.stringify(results));
+    }
   }
 
 
@@ -95,7 +120,9 @@ $(document).ready(function(){
       }
       video.currentTime = newTime;
       renderResults();
-      slowDownVideo();
+      if (useStorage) {
+        localStorage.setItem("dtrpvd.speakermarker.results", JSON.stringify(results));
+      }
     } 
     // "s" as shortcut for slow down video
     else if (e.which === 83) {
@@ -112,6 +139,16 @@ $(document).ready(function(){
     else if (e.which === 77) {
       mergeTurn(results[results.length-1][2])
     }
+    // "l" for fullscreen
+    else if (e.which === 76) {
+      if (video.requestFullscreen) {
+        video.requestFullscreen();
+      } else if (video.mozRequestFullScreen) {
+        video.mozRequestFullScreen();
+      } else if (video.webkitRequestFullscreen) {
+        video.webkitRequestFullscreen();
+      }
+    }
   });
 
 // Keyboard shortcuts from 1 to 5 to represent the team members and space to represent silence
@@ -119,42 +156,42 @@ $(document).ready(function(){
     if (e.which === 49 && video.currentTime !==0) {
         $("#member_A").removeClass('active');
         memberAEnd = video.currentTime;
-        results.push(["Member A", memberAStart, memberAEnd]);
+        pushAndSave(["Member A", memberAStart, memberAEnd]);
         down[e.which] = null
         resultsOnScreen();
         console.log(results);
     } else if (e.which === 50 && video.currentTime !==0){
         $("#member_B").removeClass('active'); 
         memberBEnd = video.currentTime;
-        results.push(["Member B", memberBStart, memberBEnd]);
+        pushAndSave(["Member B", memberBStart, memberBEnd]);
         down[e.which] = null
         resultsOnScreen();
         console.log(results);
     } else if (e.which === 51 && video.currentTime !==0){
         $("#member_C").removeClass('active');
         memberCEnd = video.currentTime;
-        results.push(["Member C", memberCStart, memberCEnd]);
+        pushAndSave(["Member C", memberCStart, memberCEnd]);
         down[e.which] = null
         resultsOnScreen();
         console.log(results);
     } else if (e.which === 52 && video.currentTime !==0){
         $("#member_D").removeClass('active');
         memberDEnd = video.currentTime;
-        results.push(["Member D", memberDStart, memberDEnd]);
+        pushAndSave(["Member D", memberDStart, memberDEnd]);
         down[e.which] = null
         resultsOnScreen();
         console.log(results);
     } else if (e.which === 53 && video.currentTime !==0){
         $("#member_E").removeClass('active');
         memberEEnd = video.currentTime;
-        results.push(["Member E", memberEStart, memberEEnd]);
+        pushAndSave(["Member E", memberEStart, memberEEnd]);
         down[e.which] = null
         resultsOnScreen();
         console.log(results);
     } else if (e.which === 54 && video.currentTime !==0){
         $("#member_F").removeClass('active');
         memberFEnd = video.currentTime;
-        results.push(["Member F", memberFStart, memberFEnd]);
+        pushAndSave(["Member F", memberFStart, memberFEnd]);
         down[e.which] = null
         resultsOnScreen();
         console.log(results);
@@ -232,6 +269,9 @@ $(document).ready(function(){
     // clean the results on the page, but keeps the first row
     $('tr').not(':first').remove();
     console.log(results);
+    if (useStorage) {
+      localStorage.setItem("dtrpvd.speakermarker.results", JSON.stringify(results));
+    }
   };
 
 // displays time stamps in the HTML page
