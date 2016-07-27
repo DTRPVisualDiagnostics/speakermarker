@@ -118,7 +118,7 @@ $(document).ready(function(){
       } 
     }
     // delete last turn, jump 3 seconds before it and slow down the video speed by 0.1 when "x" is pressed
-    else if (e.which === 88) {
+    if (e.which === 88) {
       var deletedTurn = results.pop();
       deleted.push(deletedTurn);
       newTime = deletedTurn[1] - 3;
