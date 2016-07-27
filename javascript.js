@@ -25,6 +25,26 @@ $(document).ready(function(){
     renderResults()
   }
 
+  function mergeTurn(endTime) {
+    results.forEach(function(d,i) {
+      if (d[2] === parseFloat(endTime)) {
+        var found = false;
+        for (j=1; j<i; j++) {
+          if (results[i-j][0] === d[0]) {
+            results[i-j][2] = results[i][2];
+            results.splice(i,1);
+            renderResults();
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          window.alert("No older turn from " + d[0])
+        }
+      }
+    });
+  }
+
 
 // Keyboard shortcuts from 1 to 5 to represent the team members 
   $(document).keydown(function (e) {  
@@ -183,6 +203,11 @@ $(document).ready(function(){
     return false;
   });
 
+  // merges this row with the one before
+  $('table').on('click', 'button.mergebutton', function () {
+    mergeTurn($(this).parent().parent().find(".endTimeEntry")[0].innerHTML);
+  });
+
   $('table').on("click", "td.startTimeEntry", function() {
     video.currentTime = this.innerHTML;
     endtimeoffset = $(this).parent().find(".endTimeEntry")[0].innerHTML;
@@ -220,7 +245,7 @@ $(document).ready(function(){
   }
 
   function appendTurn(index) {
-    $("table").append("<tr id =" + index + "><td>" + results[index][0] + "</td><td class='startTimeEntry'>" + results[index][1] + "</td><td class='endTimeEntry'>" + results[index][2] + "</td><td class=\"delete\"><button class=\"removebutton\"><img src=\"img\"delete.png\" height=10px width=10px ></td></tr>");
+    $("table").append("<tr id =" + index + "><td class=\"merge\"><button class=\"mergebutton\"><img src=\"img/merge.png\" height=10px width=10px ></td><td>" + results[index][0] + "</td><td class='startTimeEntry'>" + results[index][1] + "</td><td class='endTimeEntry'>" + results[index][2] + "</td><td class=\"delete\"><button class=\"removebutton\"><img src=\"img/delete.png\" height=10px width=10px ></td></tr>");
   }
 
 });
