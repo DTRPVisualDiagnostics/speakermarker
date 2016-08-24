@@ -168,6 +168,10 @@ input {
   font-color: white;
 }
 
+#keyShortcuts {
+  padding: 10px;
+}
+
 #nextVideo {
   font-size: 20px;
   width: 150px;
@@ -266,7 +270,7 @@ Modal Box
 
 .modalDialog > div {
   width: 400px;
-  height: 710px;
+  height: 530px;
   position: relative;
   margin: 10% auto;
   padding: 5px 20px 13px 20px;
