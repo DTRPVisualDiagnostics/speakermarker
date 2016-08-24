@@ -225,6 +225,15 @@ tr {
   text-decoration: none;
 }
 
+#videoSpeed {
+  float: left;
+}
+
+#timeShiftContainer {
+  float: right;
+  margin-right: 40px;
+}
+
 /************
 Modal Box
 ************/
@@ -257,7 +266,7 @@ Modal Box
 
 .modalDialog > div {
   width: 400px;
-  height: 520px;
+  height: 710px;
   position: relative;
   margin: 10% auto;
   padding: 5px 20px 13px 20px;
